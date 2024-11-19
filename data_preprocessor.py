@@ -17,15 +17,26 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = filtfilt(b, a, data)
     return y
 
+def remove_outliers(data, threshold=1.8):
+    q1 = np.percentile(data, 1)
+    q3 = np.percentile(data, 99)
+    iqr = q3 - q1
+    lower_bound = q1 - threshold * iqr
+    upper_bound = q3 + threshold * iqr
+    return np.clip(data, lower_bound, upper_bound)
+
 # Load configuration
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
+# Load configuration & Set parameters
 BEGIN = config['begin']
 END = config['end']
 DATA_PATH = config['data_path']
 TIME_PAIR = config['time_pair']
 OUTPUT_DIR = config['output_dir']
+DATA_POINT = 120    
+LABEL_SEGMENT_MAX = 1800 // DATA_POINT
 
 files = []
 for i in range(BEGIN, END + 1):
@@ -65,6 +76,7 @@ for idx, file in enumerate(files):
             try:
                 lowcut, highcut = freq_bands[wave_type]
                 filtered_wave = butter_bandpass_filter(wave, lowcut, highcut, fs)
+                filtered_wave = remove_outliers(filtered_wave)
                 filtered_data.append(filtered_wave)
 
                 processed_wave = []
@@ -129,4 +141,30 @@ for idx, file in enumerate(files):
         plt.savefig(os.path.join(file_output_dir, 'combined.png'))
         plt.close()
     
-    # TODO:  output the data every 1-2 minutes
+    # TODO:  output the data every DATA_POINT seconds
+    label_segment_number = TIME_PAIR[idx][0] // DATA_POINT
+    start_time = TIME_PAIR[idx][0] - label_segment_number * DATA_POINT
+
+    # Delete the first segment if the result is 30 minutes
+    if (label_segment_number == LABEL_SEGMENT_MAX):
+        label_segment_number -= 1
+        start_time += DATA_POINT
+
+    for i in range(label_segment_number):
+        output_csv_path = os.path.join(file_output_dir, f'{i}_1.csv')
+        with open(output_csv_path, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            # Write header
+            writer.writerow(['Alpha', 'Beta', 'Theta'])
+            for j in range(DATA_POINT):
+                current_time = start_time + i * DATA_POINT + j
+                try:
+                    alpha_val = EEG[0][current_time] 
+                    beta_val = EEG[1][current_time]
+                    theta_val = EEG[2][current_time]
+                    
+                    writer.writerow([alpha_val, beta_val, theta_val])
+                except:
+                    continue
+
+        
