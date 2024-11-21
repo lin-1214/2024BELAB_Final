@@ -38,6 +38,10 @@ OUTPUT_DIR = config['output_dir']
 DATA_POINT = 120    
 LABEL_SEGMENT_MAX = 1800 // DATA_POINT
 
+if (len(TIME_PAIR) != END - BEGIN + 1):
+    print("The length of time_pair is not equal to the number of files")
+    exit(1)
+
 files = []
 for i in range(BEGIN, END + 1):
     files.append(f"{i}.csv")
@@ -81,7 +85,7 @@ for idx, file in enumerate(files):
 
                 processed_wave = []
                 for j in range(len(filtered_wave) // int(sample_rate)):
-                    if idx == 0 and 990 <= j <= 1090:
+                    if idx + BEGIN == 0 and 990 <= j <= 1090:
                         continue
                     segment = filtered_wave[j * int(sample_rate):(j + 1) * int(sample_rate)]
                     if segment.size > 0:
@@ -115,9 +119,9 @@ for idx, file in enumerate(files):
             axs[i][1].legend()
             axs[i][1].grid(True)
         
-        fig1.suptitle(f'EEG Waves Comparison - File {idx + 1}', fontsize=16)
+        fig1.suptitle(f'EEG Waves Comparison - File {idx + BEGIN}', fontsize=16)
         
-        file_output_dir = os.path.join(OUTPUT_DIR, f"{idx + 1}")
+        file_output_dir = os.path.join(OUTPUT_DIR, f"{idx+ BEGIN}")
         if not os.path.exists(file_output_dir):
             os.makedirs(file_output_dir)
 
@@ -135,7 +139,7 @@ for idx, file in enumerate(files):
             ax.legend()
             ax.grid(True)
         
-        fig2.suptitle(f'EEG Waves - File {idx + 1}', fontsize=16)
+        fig2.suptitle(f'EEG Waves - File {idx + BEGIN}', fontsize=16)
         
         plt.tight_layout()
         plt.savefig(os.path.join(file_output_dir, 'combined.png'))
