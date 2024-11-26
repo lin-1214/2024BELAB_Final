@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 from scipy.signal import butter, filtfilt
 import json
+from tqdm import tqdm
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyquist = 0.5 * fs
@@ -35,6 +36,7 @@ END = config['end']
 DATA_PATH = config['data_path']
 TIME_PAIR = config['time_pair']
 OUTPUT_DIR = config['output_dir']
+VIDEO_DATA = config['video_data']
 DATA_POINT = 120    
 LABEL_SEGMENT_MAX = 1800 // DATA_POINT
 
@@ -46,7 +48,7 @@ files = []
 for i in range(BEGIN, END + 1):
     files.append(f"{i}.csv")
 
-for idx, file in enumerate(files):
+for idx, file in enumerate(tqdm(files, desc="Processing files")):
     raw_data = []
     EEG = []
     with open(f'./data/{file}', 'r') as file:
@@ -58,9 +60,14 @@ for idx, file in enumerate(files):
         theta = []
         for row in csv_reader:
             try:
-                alpha.append(float(row[1]))
-                beta.append(float(row[2]))
-                theta.append(float(row[4]))
+                if ((idx + BEGIN >= 27 and idx + BEGIN <= 31) and (idx + BEGIN) % 2 == 1):
+                    alpha.append(float(row[0]))
+                    beta.append(float(row[1]))
+                    theta.append(float(row[3]))
+                else:
+                    alpha.append(float(row[1]))
+                    beta.append(float(row[2]))
+                    theta.append(float(row[4]))
             except:
                 continue
 
@@ -155,7 +162,11 @@ for idx, file in enumerate(files):
         start_time += DATA_POINT
 
     for i in range(label_segment_number):
-        output_csv_path = os.path.join(file_output_dir, f'{i}_1.csv')
+        if (idx + BEGIN in VIDEO_DATA):
+            output_csv_path = os.path.join(file_output_dir, f'{i}_0.csv')
+        else:
+            output_csv_path = os.path.join(file_output_dir, f'{i}_1.csv')
+        
         with open(output_csv_path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             # Write header
@@ -171,4 +182,22 @@ for idx, file in enumerate(files):
                 except:
                     continue
 
+def print_completion_banner():
+    total_files = END - BEGIN + 1
+    bar_width = 40
+    bar = '█' * bar_width
+    
+    print("\n" + "=" * 60)
+    print("🎉 Processing Complete! 🎉")
+    print(f"✨ Successfully processed {total_files} files ✨")
+    print("\n📊 Progress:")
+    print(f"[{bar}] 100%")
+    print("\n📈 Results:")
+    print(f"   📁 Files processed: {total_files}")
+    print(f"   💾 Output directory: {OUTPUT_DIR}")
+    print(f"   ⏱️  Time segments: {DATA_POINT}s")
+    print("=" * 60 + "\n")
+
+print_completion_banner()
+    
         
