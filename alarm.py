@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import blue_tooth
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -28,6 +29,8 @@ def blink_alarm(times=3, interval=0.5):
 if __name__ == "__main__":
     try:
         blink_alarm(3)
+        target_mac = "XX:XX:XX:XX:XX:XX"
+        blue_tooth.send_message(target_mac)
 
     finally:
         GPIO.cleanup()
