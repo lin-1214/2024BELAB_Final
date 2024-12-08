@@ -48,7 +48,7 @@ for sub_dir in os.listdir(input_pth):
     for file in os.listdir(sub_pth):
         if file.endswith(".csv"):
             file_pth = os.path.join(sub_pth, file)
-            print(f"Loading data from {file_pth}")
+            # print(f"Loading data from {file_pth}")
 
             #load data
             df = pd.read_csv(file_pth)
@@ -63,7 +63,7 @@ for sub_dir in os.listdir(input_pth):
             # print(f"label: {label}")
             y_data.append(torch.tensor(label).float())
 
-            print("Successfully load data.")
+            # print("Successfully load data.")
 
 #cut the data into training and validation set
 X_train = torch.tensor(X_data[:num_train_samples])

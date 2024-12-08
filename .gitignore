@@ -56,5 +56,5 @@ tmp/
 temp/
 .tmp/
 
-#model files
-*.pth
+# #model files
+# *.pth
