@@ -55,3 +55,6 @@ coverage/
 tmp/
 temp/
 .tmp/
+
+#model files
+*.pth
