@@ -26,6 +26,8 @@ LED_PIN = 4      # GPIO4
 SERIAL_PORT = '/dev/serial0'
 BAUD_RATE = 9600
 
+# Model parameters
+MODEL_PATH = './model_path'
 TEST_FILE = '1'
 
 def setup_bluetooth():
@@ -106,7 +108,7 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
-        model.load_state_dict(torch.load('./lstm_model_20241208-214752.pth'))
+        model.load_state_dict(torch.load(f'{MODEL_PATH}/lstm_model_20241208-214752.pth'))
         model = model.to('cpu')
         
         # Setup GPIO pins
