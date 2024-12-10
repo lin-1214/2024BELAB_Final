@@ -1,2 +1,2 @@
 sudo apt install python3-bluez
-pip install torch
+pip3 install torch pandas tqdm scipy --break-system-packages

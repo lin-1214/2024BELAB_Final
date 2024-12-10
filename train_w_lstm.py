@@ -174,4 +174,4 @@ print("Training finished.")
 
 # Save the model
 t = time.strftime("%Y%m%d-%H%M%S")
-torch.save(model.state_dict(), f'lstm_model_{t}.pth')
+torch.save(model.state_dict(), f'./model_path/lstm_model_{t}.pth')

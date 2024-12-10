@@ -7,6 +7,7 @@ import torch
 import csv
 import numpy as np
 import os
+from tqdm import tqdm
 from scipy.signal import butter, filtfilt
 
 GPIO.setmode(GPIO.BCM)
@@ -131,7 +132,7 @@ if __name__ == "__main__":
 
         res = []
         # Process data
-        for i in range(FOLDER_NUM):
+        for i in tqdm(range(FOLDER_NUM), desc="Processing folders"):
             for j in range(SET_NUM):
                 data = process_data(f'./testData/{i}/{j}.csv')
                 # Predict
