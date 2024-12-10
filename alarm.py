@@ -132,7 +132,7 @@ def process_data(file_path, window_size=120):
             window_mean = window.mean(axis=0)
             window_std = window.std(axis=0)
 
-            normalized_data[i] = (window - window_mean) / (window_std + 1e-8)  # Add small epsilon to avoid division by zero
+            normalized_data[i] = (window - window_mean) / (window_std)
         
         # Convert numpy array to PyTorch tensor
         normalized_data = torch.FloatTensor(normalized_data)
@@ -170,9 +170,10 @@ if __name__ == "__main__":
             for j in range(SET_NUM):
                 data = process_data(f'./testData/{i}/{j}.csv')
                 # Predict
-                outputs = torch.sigmoid(model(data))
+                outputs = model(data)
                 print(f"outputs: {outputs}")
-                preds = (outputs >= 0.5).float()
+                print(f"sigmoid: {torch.sigmoid(outputs)}")
+                preds = (torch.sigmoid(outputs) >= 0.5).float()
                 # print(f"preds: {preds}")
 
                 alarm_count = 0
