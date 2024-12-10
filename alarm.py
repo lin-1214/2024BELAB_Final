@@ -161,6 +161,7 @@ if __name__ == "__main__":
                 data = process_data(f'./testData/{i}/{j}.csv')
                 # Predict
                 outputs = model(data)
+                print(f"outputs: {outputs}")
                 preds = (outputs >= 0.5).float()
 
                 alarm_count = 0
@@ -186,18 +187,17 @@ if __name__ == "__main__":
         # Add debug information
         print(f"Length of res_array: {len(res_array)}")
         print(f"Length of expected_array: {len(expected_array)}")
-        
-        # Ensure arrays are of the same length before comparison
-        min_length = min(len(res_array), len(expected_array))
-        res_array = res_array[:min_length]
-        expected_array = expected_array[:min_length]
+
+        print(f"result: {res_array}")
+        print(f"expected: {expected_array}")
+
+        if len(res_array) != len(expected_array):
+            print("❌ Length mismatch between result and expected arrays")
+            sys.exit(1)
         
         # Calculate accuracy
-        accuracy = np.sum(res_array == expected_array) / min_length
-        
-        print(f"predicted: {res_array}")
-        print(f"expected: {expected_array}")
-        print(f'Total accuracy for {min_length} cases: {accuracy:.4f}')
+        accuracy = np.sum(res_array == expected_array) / len(res_array)
+        print(f'Total accuracy for {len(res_array)} cases: {accuracy:.4f}')
                 
     except KeyboardInterrupt:
         print("\n⚠️ Program interrupted by user")
