@@ -54,8 +54,7 @@ class LSTMClassifier(nn.Module):
         # We can take the output of the last time step for classification
         last_step = lstm_out[:, -1, :]  # shape (batch, hidden_dim)
         logits = self.fc(last_step)     # shape (batch, 1)
-        probs = self.sigmoid(logits)    # shape (batch, 1)
-        return probs
+        return logits
 
 def setup_bluetooth():
     try:
@@ -117,19 +116,25 @@ def process_data(file_path, window_size=120):
         n_samples = len(data)
         n_windows = n_samples // window_size
         
-        # Truncate data to fit complete windows & normalize
+        # Truncate data to fit complete windows
         data = data[:n_windows * window_size]
-        data = (data - data.mean()) / data.std()
         
         # Reshape to (n_windows, window_size, 3)
         reshaped_data = data.reshape(n_windows, window_size, 3)
         
-        # Convert numpy array to PyTorch tensor before returning
-        reshaped_data = torch.FloatTensor(reshaped_data)
-
+        # Normalize each window independently
+        normalized_data = np.zeros_like(reshaped_data)
+        for i in range(n_windows):
+            window = reshaped_data[i]
+            # Normalize each window independently
+            window_mean = window.mean(axis=0)
+            window_std = window.std(axis=0)
+            normalized_data[i] = (window - window_mean) / (window_std + 1e-8)  # Add small epsilon to avoid division by zero
         
-        # print(f"✅ Data shaped to: {reshaped_data.shape}")
-        return reshaped_data
+        # Convert numpy array to PyTorch tensor
+        normalized_data = torch.FloatTensor(normalized_data)
+        
+        return normalized_data
         
     except Exception as e:
         print(f"❌ Error processing data: {e}")
