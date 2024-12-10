@@ -163,6 +163,7 @@ if __name__ == "__main__":
                 outputs = model(data)
                 # print(f"outputs: {outputs}")
                 preds = (outputs >= 0.5).float()
+                print(f"preds: {preds}")
 
                 alarm_count = 0
                 for i in range(len(preds)//5):
