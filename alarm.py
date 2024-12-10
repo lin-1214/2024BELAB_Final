@@ -78,7 +78,7 @@ def send_message(ser, message):
     try:
         # Convert string message to bytes using encode()
         ser.write(message.encode('utf-8'))  
-        print(f"✅ Sent byte value: {message.encode('utf-8')}")
+        # print(f"✅ Sent byte value: {message.encode('utf-8')}")
     except Exception as e:
         print(f"❌ Error sending message: {e}")
 
@@ -126,7 +126,7 @@ def process_data(file_path, window_size=120):
         # Convert numpy array to PyTorch tensor before returning
         reshaped_data = torch.FloatTensor(reshaped_data)
         
-        print(f"✅ Data shaped to: {reshaped_data.shape}")
+        # print(f"✅ Data shaped to: {reshaped_data.shape}")
         return reshaped_data
         
     except Exception as e:
@@ -164,14 +164,14 @@ if __name__ == "__main__":
                 preds = (outputs >= 0.5).float()
 
                 alarm_count = 0
-                for i in range(len(preds)/5):
+                for i in range(len(preds)//5):
                     if sum(preds[i*5:(i+1)*5]) >= 3:
                         alarm_count += 1
                     else:
                         alarm_count = 0
                     
                     if alarm_count >= 3:
-                        print("Alarm")
+                        # print("Alarm")
                         send_message(bluetooth_serial, "1")
                         blink_alarm()
                         alarm_count = 0
@@ -179,8 +179,12 @@ if __name__ == "__main__":
                     else:
                         res.append(0)
         
-        print(f'Total accuracy for {FOLDER_NUM * SET_NUM} cases: {sum(res == EXEPECTED_RES) / len(res)}')
-
+        # Convert lists to numpy arrays for comparison
+        res_array = np.array(res)
+        expected_array = np.array(EXEPECTED_RES)
+        
+        # Calculate accuracy
+        print(f'Total accuracy for {FOLDER_NUM * SET_NUM} cases: {np.sum(res_array == expected_array) / len(res)}')
                 
     except KeyboardInterrupt:
         print("\n⚠️ Program interrupted by user")
