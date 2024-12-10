@@ -167,13 +167,13 @@ if __name__ == "__main__":
                 # Predict
                 outputs = model(data)
                 print(f"outputs: {outputs}")
-                print(f"sigmoid: {torch.sigmoid(outputs)}")
-                preds = (torch.sigmoid(outputs) >= 0.5).float()
+                print(f"sigmoid: {torch.sigmoid(outputs)/5}")
+                preds = (torch.sigmoid(outputs/5) >= 0.5).float()
                 # print(f"preds: {preds}")
 
                 alarm_count = 0
-                for i in range(len(preds)//5):
-                    if sum(preds[i*5:(i+1)*5]) >= 3:
+                for k in range(len(preds)//5):
+                    if sum(preds[k*5:(k+1)*5]) >= 3:
                         alarm_count += 1
                     else:
                         alarm_count = 0
