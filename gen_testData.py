@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-output_data_folders = ['31', '33', '34', '35', '36', '37']
+# output_data_folders = ['31', '33', '34', '35', '36', '37']
+output_data_folders = ['27', '28', '34', '35', '36', '37']
 CSV_NUM = 14
 CSV_REQUIRED = 30
 SETS_PER_COUNT = 4  # Generate 4 arrays for each target count
 MAX_TARGET_COUNT = 30  # Now we can go up to 30 since we have folder 30 as well
 
-# Generate sets with different numbers of files from folders 33/37
 test_set = []
 for target_count in tqdm(range(MAX_TARGET_COUNT + 1), desc="Generating test sets"):
     for set_num in range(SETS_PER_COUNT):
@@ -23,12 +23,17 @@ for target_count in tqdm(range(MAX_TARGET_COUNT + 1), desc="Generating test sets
             # Generate all possible file paths for each folder
             for folder in output_data_folders:
                 for file_num in range(CSV_NUM):
-                    suffix = '0' if folder in ['31', '33', '37'] else '1'
+                    suffix = '0' if folder in ['27', '28', '37'] else '1'
                     file_path = f'./output/{folder}/{file_num}_{suffix}.csv'
-                    if folder in ['31', '33', '37']:
+                    if folder in ['27', '28', '37']:
                         files_target.append(file_path)
                     else:
                         files_others.append(file_path)
+            
+            # Check if we have enough files to sample
+            if target_count > len(files_target) or (CSV_REQUIRED - target_count) > len(files_others):
+                print(f"Skipping target_count {target_count} due to insufficient files.")
+                break
             
             # Randomly select files
             csv_files = random.sample(files_target, target_count) + \
@@ -38,7 +43,7 @@ for target_count in tqdm(range(MAX_TARGET_COUNT + 1), desc="Generating test sets
             random.shuffle(csv_files)
             
             # Verify we have exactly the target number of files from 31/33/37
-            actual_count = sum(1 for path in csv_files if ('/31/' in path or '/33/' in path or '/37/' in path))
+            actual_count = sum(1 for path in csv_files if ('/27/' in path or '/28/' in path or '/37/' in path))
             if actual_count == target_count:
                 test_set.append(csv_files)
                 break
