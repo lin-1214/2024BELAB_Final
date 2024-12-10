@@ -141,6 +141,8 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
+        weight = torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth')
+        print(f"weight: {weight.keys()}")
         model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'))
         model = model.to('cpu')
         
