@@ -17,8 +17,8 @@ GPIO.setwarnings(False)
 
 # Model parameters
 INPUT_DIM = 3
-HIDDEN_DIM = 64
-NUM_LAYERS = 1
+HIDDEN_DIM = 128
+NUM_LAYERS = 2
 
 # Define GPIO pins
 BUZZER_PIN = 24  # GPIO24
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
-        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.5791666666666667.pth'))
+        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.5458333333333333.pth'))
         model = model.to('cpu')
         
         # Setup GPIO pins
