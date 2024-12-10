@@ -143,7 +143,8 @@ if __name__ == "__main__":
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
         model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'), strict=True)
-        model = model.to('cpu')
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = model.to(device)
         
         # Setup GPIO pins
         GPIO.setup(BUZZER_PIN, GPIO.OUT)
@@ -166,8 +167,8 @@ if __name__ == "__main__":
                 # Predict
                 outputs = model(data)
                 print(f"outputs: {outputs}")
-                print(f"sigmoid: {torch.sigmoid(outputs/20)}")
-                preds = (torch.sigmoid(outputs/20) >= 0.5).float()
+                print(f"sigmoid: {torch.sigmoid(outputs)}")
+                preds = (torch.sigmoid(outputs) >= 0.5).float()
                 # print(f"preds: {preds}")
 
                 alarm_count = 0
