@@ -54,6 +54,7 @@ class LSTMClassifier(nn.Module):
         # We can take the output of the last time step for classification
         last_step = lstm_out[:, -1, :]  # shape (batch, hidden_dim)
         logits = self.fc(last_step)     # shape (batch, 1)
+
         return logits
 
 def setup_bluetooth():
@@ -124,7 +125,7 @@ def process_data(file_path, window_size=120):
         
         # Normalize each window independently
         normalized_data = np.zeros_like(reshaped_data)
-        
+
         for i in range(n_windows):
             window = reshaped_data[i]
             # Normalize each window independently
@@ -146,7 +147,7 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
-        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.9542.pth'))
+        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'))
         model = model.to('cpu')
         
         # Setup GPIO pins
