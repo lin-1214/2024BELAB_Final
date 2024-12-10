@@ -166,8 +166,8 @@ if __name__ == "__main__":
                 # Predict
                 outputs = model(data)
                 print(f"outputs: {outputs}")
-                print(f"sigmoid: {torch.sigmoid(outputs/10)}")
-                preds = (torch.sigmoid(outputs/10) >= 0.5).float()
+                print(f"sigmoid: {torch.sigmoid(outputs/20)}")
+                preds = (torch.sigmoid(outputs/20) >= 0.5).float()
                 # print(f"preds: {preds}")
 
                 alarm_count = 0
