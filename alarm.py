@@ -171,14 +171,14 @@ if __name__ == "__main__":
                     else:
                         alarm_count = 0
                     
-                    if alarm_count >= 3:
-                        # print("Alarm")
-                        send_message(bluetooth_serial, "1")
-                        blink_alarm()
-                        alarm_count = 0
-                        res.append(1)
-                    else:
-                        res.append(0)
+                if alarm_count >= 3:
+                    # print("Alarm")
+                    send_message(bluetooth_serial, "1")
+                    blink_alarm()
+                    alarm_count = 0
+                    res.append(1)
+                else:
+                    res.append(0)
         
         # Convert lists to numpy arrays for comparison
         res_array = np.array(res)
