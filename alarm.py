@@ -119,8 +119,10 @@ def process_data(file_path, window_size=120):
         # Truncate data to fit complete windows
         data = data[:n_windows * window_size]
         
-        # Reshape to (n_windows, window_size, 3)
-        reshaped_data = data.reshape(n_windows, window_size, 3)
+        reshaped_data = np.zeros((n_windows, window_size, 3))
+        
+        for i in range(n_windows):
+            reshaped_data[i] = data[i*window_size:(i+1)*window_size]
         
 
         for i in range(reshaped_data.shape[0]):
