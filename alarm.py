@@ -165,13 +165,13 @@ if __name__ == "__main__":
                 preds = (outputs >= 0.5).float()
 
                 alarm_count = 0
-                for i in range(len(preds)//3):
-                    if sum(preds[i*3:(i+1)*3]) >= 2:
+                for i in range(len(preds)//5):
+                    if sum(preds[i*5:(i+1)*5]) >= 3:
                         alarm_count += 1
                     else:
                         alarm_count = 0
                     
-                if alarm_count >= 5:
+                if alarm_count >= 3:
                     # print("Alarm")
                     send_message(bluetooth_serial, "1")
                     blink_alarm()

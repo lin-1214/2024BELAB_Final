@@ -66,12 +66,12 @@ for idx, file_set in tqdm(enumerate(test_set), desc="Processing files", total=le
     current_play_time = 0
     
     # Process in groups of 5 files
-    for i in range(0, len(file_suffixes), 3):
-        group = file_suffixes[i:i+3]
+    for i in range(0, len(file_suffixes), 5):
+        group = file_suffixes[i:i+5]
         ones_count = sum(1 for suffix in group if suffix == '1')
         
-        if ones_count >= 2:
-            current_play_time += 6
+        if ones_count >= 3:
+            current_play_time += 10
             longest_play_time = max(longest_play_time, current_play_time)
         else:
             current_play_time = 0
