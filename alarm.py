@@ -117,14 +117,16 @@ def process_data(file_path, window_size=120):
         n_samples = len(data)
         n_windows = n_samples // window_size
         
-        # Truncate data to fit complete windows
+        # Truncate data to fit complete windows & normalize
         data = data[:n_windows * window_size]
+        data = (data - data.mean()) / data.std()
         
         # Reshape to (n_windows, window_size, 3)
         reshaped_data = data.reshape(n_windows, window_size, 3)
         
         # Convert numpy array to PyTorch tensor before returning
         reshaped_data = torch.FloatTensor(reshaped_data)
+
         
         # print(f"✅ Data shaped to: {reshaped_data.shape}")
         return reshaped_data
@@ -138,7 +140,7 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
-        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.5458333333333333.pth'))
+        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.9542.pth'))
         model = model.to('cpu')
         
         # Setup GPIO pins
@@ -163,7 +165,6 @@ if __name__ == "__main__":
                 outputs = model(data)
                 # print(f"outputs: {outputs}")
                 preds = (outputs >= 0.5).float()
-                print(f"preds: {preds}")
 
                 alarm_count = 0
                 for i in range(len(preds)//5):
