@@ -82,7 +82,7 @@ def send_message(ser, message):
     except Exception as e:
         print(f"❌ Error sending message: {e}")
 
-def blink_alarm(times=3, interval=0.5):
+def blink_alarm(times=1, interval=0.5):
     try:
         for _ in range(times):
             GPIO.output(BUZZER_PIN, GPIO.HIGH)
@@ -183,8 +183,21 @@ if __name__ == "__main__":
         res_array = np.array(res)
         expected_array = np.array(EXEPECTED_RES)
         
+        # Add debug information
+        print(f"Length of res_array: {len(res_array)}")
+        print(f"Length of expected_array: {len(expected_array)}")
+        
+        # Ensure arrays are of the same length before comparison
+        min_length = min(len(res_array), len(expected_array))
+        res_array = res_array[:min_length]
+        expected_array = expected_array[:min_length]
+        
         # Calculate accuracy
-        print(f'Total accuracy for {FOLDER_NUM * SET_NUM} cases: {np.sum(res_array == expected_array) / len(res)}')
+        accuracy = np.sum(res_array == expected_array) / min_length
+        
+        print(f"predicted: {res_array}")
+        print(f"expected: {expected_array}")
+        print(f'Total accuracy for {min_length} cases: {accuracy:.4f}')
                 
     except KeyboardInterrupt:
         print("\n⚠️ Program interrupted by user")
