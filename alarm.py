@@ -161,7 +161,7 @@ if __name__ == "__main__":
                 data = process_data(f'./testData/{i}/{j}.csv')
                 # Predict
                 outputs = model(data)
-                print(f"outputs: {outputs}")
+                # print(f"outputs: {outputs}")
                 preds = (outputs >= 0.5).float()
 
                 alarm_count = 0
