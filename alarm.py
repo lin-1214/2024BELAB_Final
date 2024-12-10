@@ -124,6 +124,7 @@ def process_data(file_path, window_size=120):
         
         # Normalize each window independently
         normalized_data = np.zeros_like(reshaped_data)
+        
         for i in range(n_windows):
             window = reshaped_data[i]
             # Normalize each window independently
@@ -169,7 +170,7 @@ if __name__ == "__main__":
                 # Predict
                 outputs = model(data)
                 # print(f"outputs: {outputs}")
-                preds = (outputs >= 0.5).float()
+                preds = (torch.sigmoid(outputs) >= 0.5).float()
 
                 alarm_count = 0
                 for i in range(len(preds)//5):
