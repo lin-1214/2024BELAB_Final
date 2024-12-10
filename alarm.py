@@ -120,7 +120,7 @@ def process_data(file_path, window_size=120):
         data = data[:n_windows * window_size]
         
         reshaped_data = np.zeros((n_windows, window_size, 3))
-        
+
         for i in range(n_windows):
             reshaped_data[i] = data[i*window_size:(i+1)*window_size]
         
@@ -166,8 +166,8 @@ if __name__ == "__main__":
                 # Predict
                 outputs = model(data)
                 print(f"outputs: {outputs}")
-                print(f"sigmoid: {torch.sigmoid(outputs)}")
-                preds = (torch.sigmoid(outputs) >= 0.5).float()
+                print(f"sigmoid: {torch.sigmoid(outputs/10)}")
+                preds = (torch.sigmoid(outputs/10) >= 0.5).float()
                 # print(f"preds: {preds}")
 
                 alarm_count = 0
