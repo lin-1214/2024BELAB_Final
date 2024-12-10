@@ -44,7 +44,6 @@ class LSTMClassifier(nn.Module):
         self.lstm = nn.LSTM(input_size=input_dim, hidden_size=hidden_dim, 
                             num_layers=num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_dim, 1)
-        self.sigmoid = nn.Sigmoid()
         
     def forward(self, x):
         # x: (batch, seq_len, input_dim)
@@ -141,9 +140,7 @@ if __name__ == "__main__":
 
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
-        weight = torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth')
-        print(f"weight: {weight.keys()}")
-        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'))
+        model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'), strict=True)
         model = model.to('cpu')
         
         # Setup GPIO pins
