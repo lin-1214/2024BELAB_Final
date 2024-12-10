@@ -123,21 +123,14 @@ def process_data(file_path, window_size=120):
         # Reshape to (n_windows, window_size, 3)
         reshaped_data = data.reshape(n_windows, window_size, 3)
         
-        # Normalize each window independently
-        normalized_data = np.zeros_like(reshaped_data)
 
-        for i in range(n_windows):
-            window = reshaped_data[i]
-            # Normalize each window independently
-            window_mean = window.mean(axis=0)
-            window_std = window.std(axis=0)
-
-            normalized_data[i] = (window - window_mean) / (window_std)
+        for i in range(reshaped_data.shape[0]):
+            reshaped_data[i] = (reshaped_data[i] - reshaped_data[i].mean()) / reshaped_data[i].std()
         
         # Convert numpy array to PyTorch tensor
-        normalized_data = torch.FloatTensor(normalized_data)
+        reshaped_data = torch.FloatTensor(reshaped_data)
         
-        return normalized_data
+        return reshaped_data
         
     except Exception as e:
         print(f"❌ Error processing data: {e}")
