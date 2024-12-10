@@ -97,7 +97,6 @@ class LSTMClassifier(nn.Module):
         self.lstm = nn.LSTM(input_size=input_dim, hidden_size=hidden_dim, 
                             num_layers=num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_dim, 1)
-        self.sigmoid = nn.Sigmoid()
         
     def forward(self, x):
         # x: (batch, seq_len, input_dim)
@@ -106,9 +105,8 @@ class LSTMClassifier(nn.Module):
         lstm_out, _ = self.lstm(x)  
         # We can take the output of the last time step for classification
         last_step = lstm_out[:, -1, :]  # shape (batch, hidden_dim)
-        logits = self.fc(last_step)     # shape (batch, 1)
-        probs = self.sigmoid(logits)    # shape (batch, 1)
-        return probs
+        logits = self.fc(last_step)     # shape (batch, 1 
+        return logits
 
 model = LSTMClassifier(input_dim, hidden_dim, num_layers)
 model = model.to(device)  # If you have GPU: model.to('cuda')
@@ -137,7 +135,7 @@ for epoch in range(num_epochs):
         # Forward pass
         outputs = model(X_batch)
         loss = criterion(outputs, y_batch)
-        pred = (outputs >= 0.5).float()
+        pred = (torch.sigmoid(outputs) >= 0.5).float()
         correct += (pred == y_batch).sum().item()
 
         # Backprop

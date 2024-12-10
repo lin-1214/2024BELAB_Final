@@ -166,8 +166,6 @@ if __name__ == "__main__":
                 data = process_data(f'./testData/{i}/{j}.csv')
                 # Predict
                 outputs = model(data)
-                print(f"outputs: {outputs}")
-                print(f"sigmoid: {torch.sigmoid(outputs)}")
                 preds = (torch.sigmoid(outputs) >= 0.5).float()
                 # print(f"preds: {preds}")
 
