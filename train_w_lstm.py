@@ -15,16 +15,16 @@ seq_len = 120       # length of the time series
 input_dim = 3       # number of features (alpha, beta, delta)
 hidden_dim = 64      # size of LSTM hidden state
 num_layers = 1       # number of LSTM layers
-num_epochs = 20
+num_epochs = 500
 batch_size = 16
-learning_rate = 0.01
+learning_rate = 0.005
 
 # -------------------------
 # Example Data (Replace this with your own data)
 # Suppose we have 500 samples for training, each with shape (120, 3)
 # and a binary label.
-num_train_samples = 340
-num_val_samples = 63
+num_train_samples = 450
+# num_val_samples = 63
 
 # X_train = torch.randn(num_train_samples, seq_len, input_dim)  # shape (N, 120, 3)
 # y_train = torch.randint(0, 2, (num_train_samples,)).float()   # shape (N, )
@@ -66,6 +66,10 @@ for sub_dir in os.listdir(input_pth):
             # print("Successfully load data.")
 
 #cut the data into training and validation set
+#randomly shuffle the data
+import random
+random.seed(9)
+random.shuffle(X_data)
 X_train = torch.tensor(X_data[:num_train_samples])
 y_train = torch.tensor(y_data[:num_train_samples])
 X_val = torch.tensor(X_data[num_train_samples:])
@@ -114,6 +118,9 @@ model = model.to(device)  # If you have GPU: model.to('cuda')
 # -------------------------
 criterion = nn.BCELoss()      # Binary cross-entropy loss
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=40, gamma=0.7)
+
+best_acc = 0
 
 # -------------------------
 # Training Loop
@@ -139,6 +146,8 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         running_loss += loss.item() * X_batch.size(0)
+    
+    scheduler.step()
 
     train_acc = correct / len(train_dataset)
     train_loss = running_loss / len(train_dataset)
@@ -161,14 +170,20 @@ for epoch in range(num_epochs):
 
             # Compute accuracy
             preds = (outputs >= 0.5).float()
+            # print(f"pred: {preds}")
+            # print(f"y_val: {y_val_batch}")
             correct += (preds == y_val_batch).sum().item()
             total += y_val_batch.size(0)
 
     val_loss = val_loss / len(val_dataset)
     val_acc = correct / total
+    if val_acc > best_acc:
+        best_acc = val_acc
+        print(f"Best model so far, save it.")
+        torch.save(model.state_dict(), f'./model_path/best_lstm_model_{best_acc}.pth')
 
     print(f"Epoch [{epoch+1}/{num_epochs}], "
-          f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
+          f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, lr: {scheduler.get_last_lr()}")
     
 print("Training finished.")
 
