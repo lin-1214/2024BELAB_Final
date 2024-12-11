@@ -81,12 +81,12 @@ def send_message(ser, message):
     except Exception as e:
         print(f"❌ Error sending message: {e}")
 
-def blink_alarm(times=1, interval=0.5):
+def blink_alarm(times=2, interval=0.5):
     try:
         for _ in range(times):
             GPIO.output(BUZZER_PIN, GPIO.HIGH)
             GPIO.output(LED_PIN, GPIO.HIGH)
-            time.sleep(interval/2)
+            time.sleep(interval/5)
             GPIO.output(BUZZER_PIN, GPIO.LOW)
             GPIO.output(LED_PIN, GPIO.LOW)
             time.sleep(interval)
@@ -184,14 +184,12 @@ if __name__ == "__main__":
                     res.append(1)
                 else:
                     res.append(0)
+
+                time.sleep(1)
         
         # Convert lists to numpy arrays for comparison
         res_array = np.array(res)
         expected_array = np.array(EXEPECTED_RES)
-        
-        # Add debug information
-        print(f"Length of res_array: {len(res_array)}")
-        print(f"Length of expected_array: {len(expected_array)}")
 
         print(f"result: {res_array}")
         print(f"expected: {expected_array}")
