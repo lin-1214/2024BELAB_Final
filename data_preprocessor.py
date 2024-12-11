@@ -44,11 +44,10 @@ def print_completion_banner():
     print("=" * 60 + "\n")
 
 
-# Load configuration
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-# Load configuration & Set parameters
+
 BEGIN = config['begin']
 END = config['end']
 DATA_PATH = config['data_path']
@@ -170,11 +169,11 @@ for idx, file in enumerate(tqdm(files, desc="Processing files")):
         plt.savefig(os.path.join(file_output_dir, 'combined.png'))
         plt.close()
     
-    # TODO:  output the data every DATA_POINT seconds
+ 
     label_segment_number = TIME_PAIR[idx][0] // DATA_POINT
     start_time = TIME_PAIR[idx][0] - label_segment_number * DATA_POINT
 
-    # Delete the first segment if the result is 30 minutes
+
     if (label_segment_number == LABEL_SEGMENT_MAX):
         label_segment_number -= 1
         start_time += DATA_POINT
