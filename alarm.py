@@ -56,8 +56,9 @@ class LSTMClassifier(nn.Module):
 
         return logits
 
-def setup_bluetooth():
+def send_message(message):
     try:
+        # Setup new connection
         ser = serial.Serial(
             port=SERIAL_PORT,
             baudrate=BAUD_RATE,
@@ -66,18 +67,13 @@ def setup_bluetooth():
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS
         )
-
         time.sleep(0.1)
-        return ser
-    except Exception as e:
-        print(f"❌ Error setting up HC-05: {e}")
-        return None
-
-def send_message(ser, message):
-    try:
-        # Convert string message to bytes using encode()
-        ser.write(message.encode('utf-8'))  
-        # print(f"✅ Sent byte value: {message.encode('utf-8')}")
+        
+        # Send message
+        ser.write(message.encode('utf-8'))
+        
+        # Close connection
+        ser.close()
     except Exception as e:
         print(f"❌ Error sending message: {e}")
 
@@ -138,8 +134,6 @@ def process_data(file_path, window_size=120):
         return None
 
 if __name__ == "__main__":
-    bluetooth_serial = None
-
     try:
         model = LSTMClassifier(INPUT_DIM, HIDDEN_DIM, NUM_LAYERS)
         model.load_state_dict(torch.load(f'{MODEL_PATH}/best_lstm_model_0.8250.pth'), strict=True)
@@ -153,12 +147,6 @@ if __name__ == "__main__":
         # Test blink_alarm
         blink_alarm()
         
-        # Setup HC-05
-        bluetooth_serial = setup_bluetooth()
-        if bluetooth_serial is None:
-            print("❌ Could not establish Bluetooth connection. Exiting...")
-            sys.exit(1)
-
         res = []
         # Process data
         for i in tqdm(range(FOLDER_NUM), desc="Processing folders"):
@@ -177,8 +165,7 @@ if __name__ == "__main__":
                         alarm_count = 0
                     
                 if alarm_count >= 3:
-                    # print("Alarm")
-                    send_message(bluetooth_serial, "1")
+                    send_message("1")
                     blink_alarm()
                     alarm_count = 0
                     res.append(1)
@@ -205,7 +192,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n⚠️ Program interrupted by user")
     finally:
-        if bluetooth_serial:
-            bluetooth_serial.close()
         GPIO.cleanup()
         print("🧹 Cleanup complete")
