@@ -165,7 +165,7 @@ if __name__ == "__main__":
                         alarm_count = 0
                     
                 if alarm_count >= 3:
-                    send_message("1")
+                    send_message("1\n")
                     blink_alarm()
                     alarm_count = 0
                     res.append(1)
