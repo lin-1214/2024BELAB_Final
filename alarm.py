@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 else:
                     res.append(0)
 
-                time.sleep(1)
+                time.sleep(0.35)
         
         # Convert lists to numpy arrays for comparison
         res_array = np.array(res)
