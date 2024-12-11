@@ -82,7 +82,7 @@ def blink_alarm(times=2, interval=0.5):
         for _ in range(times):
             GPIO.output(BUZZER_PIN, GPIO.HIGH)
             GPIO.output(LED_PIN, GPIO.HIGH)
-            time.sleep(interval/100)
+            time.sleep(interval/10)
             GPIO.output(BUZZER_PIN, GPIO.LOW)
             GPIO.output(LED_PIN, GPIO.LOW)
             time.sleep(interval)
